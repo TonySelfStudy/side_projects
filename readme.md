@@ -2,20 +2,20 @@
 *Fun side projects to develop and explore python skills.*  
 
 Example projects include:
-1) A dungeons and dragons character generator
-2) A pig latin translator
-3) more to follow ...
+1) A dungeons and dragons character generator,
+2) A pig latin translator,
+3) More to follow ...
 
 ## Notes
 
-The documentation and qa/qc varies from project to project in this repository.
+The documentation and qa/qc varies from project-to-project in this repository.
 
 Some projects are well documented, some are very light and are only intended 
 to demonstrate a proof of concept, whereas some are at intial development and are
 akin to scratch code.  Buyer beware, but remember it is all free :)
 
 Several projects presented here were inspired by code challenges introduced in 
-textbooks and online tutorials which are sited in the 
+textbooks and online tutorials which are cited in the 
 [Resources](#Resources) section below.
 
 ## Screenshots
