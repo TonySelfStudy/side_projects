@@ -12,7 +12,8 @@ The documentation and qa/qc varies from project to project in this repository.
 Some projects are very light and are only intended to demonstrate a proof of concept.
 
 Several of the projects are inspired by code challenges introduced in textbooks
-and online tutorials which are sited in the [Resources & Acknowledgements](#Resources-&-Acknowledgements) below.
+and online tutorials which are sited in the 
+[Resources](#Resources) below.
 
 ## Screenshots
 * More to follow
@@ -27,7 +28,7 @@ See `*** License Info ***` for more information.
 Tony Held - tony.held@gmail.com  
 Project Link: [https://github.com/TonySelfStudy/side_projects](https://github.com/TonySelfStudy/side_projects)
 
-## Resources & Acknowledgements
+## Resources
 
 * [Impractical Python Projects](https://nostarch.com/impracticalpythonprojects)
 * [Automate the Boring Stuff with Python](https://nostarch.com/automatestuff2)
