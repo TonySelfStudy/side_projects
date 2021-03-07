@@ -3,8 +3,9 @@
 
 Example projects include:
 1) A dungeons and dragons character generator,
-2) Command line argument parsing tutorials,   
-2) A pig latin translator,
+2) Command line argument parsing tutorials,
+3) Silly names generator using a generator, 
+4) A pig latin translator,
 3) More to follow ...
 
 ## Notes

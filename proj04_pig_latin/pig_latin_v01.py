@@ -1,37 +1,48 @@
-class PigLatin:
-    """Simple pig latin translation tool.
-
-    The phrase:         "Speaking Pig Latin does not make one porcine!"
-    Is translated to:   "Eakingspay Igpay Atinlay oesday otnay akemay oneway orcinepay!"
-
-    Implementation Details:
-    1. Words that start with a consonant have all consonant letters up to the first vowel moved
-        to the end of the word, and "AY" is appended to the word's end.
-    2. Words that start with a vowel (A, E, I, O, U), or those that have no vowels,
-        have "WAY" appended to the word's end.
-    3. If no vowels are in a word, the first 'y' is considered a vowel if present.
-    4. If the letter q is to be moved, it's following 'u' will be moved too if present.
-
-    Subtleties not implemented:
-    1. Pig latin is based on how a word sounds, not how it is spelled.
-        In this implementation, translations are made strictly from a words spelling.
-        For example, "one" should be treated as "won" if using your ear and would be
-        best translated as onway rather than oneway.
-    2. Compound words should be broken up piecemeal and translated separately to make Pig Latin less obvious.
-        However, in this implementation, compound words are considered a single word.
-        For instance: "mudslide" is translated to udslidemay.  It would be superior
-        to change it to "mud slide" first and then translate it as "udmay ideslay" to make it harder for those
-        who don't know pig latin to decode what you are saying.
 """
+Pig latin translation tool.
 
-    # Store the letters, consonants, and vowels, etc in sets
+Created by: Tony Held
+Created on: 2021-03-06
+
+The phrase:         "Speaking Pig Latin does not make one porcine!"
+Is translated to:   "Eakingspay Igpay Atinlay oesday otnay akemay oneway orcinepay!"
+
+Implementation Details:
+1. Words that start with a consonant have all consonant letters up to the first vowel moved
+    to the end of the word, and "AY" is appended to the word's end.
+2. Words that start with a vowel (A, E, I, O, U), or those that have no vowels,
+    have "WAY" appended to the word's end.
+3. If no vowels are in a word, the first 'y' is considered a vowel if present.
+4. If the letter q is to be moved, it's following 'u' will be moved too if present.
+
+Subtleties not implemented:
+1. Pig latin is based on how a word sounds, not how it is spelled.
+    In this implementation, translations are made strictly from a words spelling.
+    For example, "one" should be treated as "won" if using your ear and would be
+    best translated as onway rather than oneway.
+2. Compound words should be broken up piecemeal and translated separately to make Pig Latin less obvious.
+    However, in this implementation, compound words are considered a single word.
+    For instance: "mudslide" is translated to udslidemay.  It would be superior
+    to change it to "mud slide" first and then translate it as "udmay ideslay" to make it harder for those
+    who don't know pig latin to decode what you are saying.
+
+References & Acknowledgements:
+    1) Inspired by `Impractical Python Projects` chapter 1 challenge
+"""
+import argparse
+
+
+class PigLatin:
+    # Store the letters, consonants, and vowels, etc,
+    # as sets at the class-level
+    # -----------------------------------------
     num_letters = 26
+    vowels = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'}
     upper_case_first = ord("A")     # ord is the integer representing a character
     lower_case_first = ord("a")
     lower_case = {chr(i) for i in range(lower_case_first, lower_case_first + num_letters)}
     upper_case = {chr(i) for i in range(upper_case_first, upper_case_first + num_letters)}
     letters = lower_case | upper_case
-    vowels = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'}
     consonants = letters.difference(vowels)
 
     ignored_chars = {"'"}   # These characters should be stripped from the PLS (pig latin structure) :)
@@ -40,10 +51,7 @@ class PigLatin:
     C = list(consonants);   C.sort()        # All consonants
     V = list(vowels);       V.sort()        # All vowels (excluding the letter y)
 
-    def __init__(self, original_text=None):
-        if original_text is None:
-            original_text = "Sir Mixalot's quote of the day: I like big butts and I can't lie! " \
-                            "You other fools can not deny :)"
+    def __init__(self, original_text):
         self.original_text = original_text      # Text to be translated
         self.translated_text = []               # Translated text
         self.current_word = []                  # Current working word being processed to pig latin
@@ -91,7 +99,7 @@ class PigLatin:
         if word[0] in PigLatin.upper_case:
             is_cap = True
 
-        #Find the first occurrence of a vowel, qu, and y
+        # Find the first occurrence of a vowel, qu, and y
         for i in PigLatin.V:
             result = word.find(i)
             if result != -1:
@@ -131,12 +139,27 @@ class PigLatin:
         self.translated_text.append(return_word)
         self.current_word = []
 
+def sample_translation():
+    text = "Speaking Pig Latin does not make one porcine!"
+    print(f'Translating to pig latin: {text}')
+    translator = PigLatin(text)
+    translator.pig_sentence()
+    print(translator.translated_text)
+
 
 if __name__ == '__main__':
-    x = PigLatin("Speaking Pig Latin does not make one porcine!")
-    x.pig_sentence()
-    print(x.translated_text)
 
-    y = PigLatin()
-    y.pig_sentence()
-    print(y.translated_text)
+    # If true, run main via the command line input
+    command_line_mode = True
+
+    if command_line_mode:
+        # command line parameters
+        parser = argparse.ArgumentParser(description='Pig latin translator')
+        parser.add_argument('text', help="quoted string of text you wish to translate")
+        args = parser.parse_args()
+
+        y = PigLatin(args.text)
+        y.pig_sentence()
+        print(y.translated_text)
+    else:
+        sample_translation()

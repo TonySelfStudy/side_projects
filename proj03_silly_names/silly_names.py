@@ -31,6 +31,12 @@ first = ('Baby Oil', 'Bad News', 'Big Burps', "Bill 'Beenie-Weenie'",
          'Storyboard', 'Sweet Tea', 'TeeTee', 'Wheezy Joe',
          "Winston 'Jazz Hands'", 'Worms')
 
+middle = ('Logan', 'Lucas', 'Harry', 'Theo',  'Thomas',  'Brodie',  'Archie',  'Jacob',
+          'Finlay',  'Finn',  'Daniel',  'Joshua',  'Oscar',  'Arthur',  'Hunter', 'Ethan',
+          'Mason',  'Harrison',  'Freddie',  'Ollie',  'Adam',  'William',  'Jaxon',  'Aaron',
+          'Cameron',  'Liam',  'George',  'Jamie',  'Callum',  'Matthew',  'Muhammad',  'Caleb',
+          'Nathan',  'Tommy',  'Carter',  'Blake',  'Andrew',  'Luke',  'Jude',  'Angus')
+
 last = ('Appleyard', 'Bigmeat', 'Bloominshine', 'Boogerbottom',
         'Breedslovetrout', 'Butterbaugh', 'Clovenhoof', 'Clutterbuck',
         'Cocktoasten', 'Endicott', 'Fewhairs', 'Gooberdapple', 'Goodensmith',
@@ -97,3 +103,4 @@ if __name__ == "__main__":
         main()
     else:
         main(args.max_tries)
+# todo - consider adding middle name capacity
