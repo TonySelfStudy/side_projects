@@ -1,13 +1,20 @@
-"""Silly Name Project from Chapter 1.
-Pseudocode of goals
-Print greeting and rules (q to quit, enter to create again)
-Test entry
-Print result in red by using standard error
+"""
+Purpose: Simple project to utilize argparse, generator functions, and command line input.
+
+Created by: Tony Held
+Created on: 2021-03-06
+
+References & Acknowledgements:
+1) Inspired by `Impractical Python Projects` chapter 1 challenge
+2) argument parser: https://docs.python.org/3/howto/argparse.html
+3) Generator overview: https://realpython.com/introduction-to-python-generators/
 """
 
-from random import choice
 import sys
+from random import choice
+import argparse
 
+# First and last silly name options for
 first = ('Baby Oil', 'Bad News', 'Big Burps', "Bill 'Beenie-Weenie'",
          "Bob 'Stinkbug'", 'Bowel Noises', 'Boxelder', "Bud 'Lite' ",
          'Butterbean', 'Buttermilk', 'Buttocks', 'Chad', 'Chesterfield',
@@ -39,29 +46,54 @@ last = ('Appleyard', 'Bigmeat', 'Bloominshine', 'Boogerbottom',
         'Weiners', 'Whipkey', 'Wigglesworth', 'Wimplesnatch', 'Winterkorn',
         'Woolysocks')
 
-class TooPicky(Exception): pass
+class TooPicky(Exception):
+    """Exception if the user does not select a name combo in a reasonable amount of tries."""
+    pass
 
+def name_combo(max_tries):
+    """Return next choice via a generator function"""
 
-def next_combo(max_tries):
     for i in range(max_tries):
         yield f"Try # {i}: {choice(first)} {choice(last)}"
-    raise TooPicky("What's wrong with you!")
+    raise TooPicky("What's wrong with you! :)")
 
 
-max_tries = 5
-num_combos = 0
+def main(max_tries=10):
+    """Main function to drive silly name creator."""
 
-print("Welcome to the silly name generator.")
-print(f"You get a maximum of {max_tries} tries.")
-print("Press q<enter> to quit or <enter> to select again", flush=True)
+    print("Welcome to the silly name generator.")
+    print(f"You get a maximum of {max_tries} tries.")
+    print("Press q<enter> to quit or <enter> to select again", flush=True)
+    full_name = None
 
-try:
-    for full_name in next_combo(max_tries):
-        print(full_name, file=sys.stderr, end="")
-        my_input = input()
-        if my_input.lower() == "q":
-            break
-    print(f"Excellent choice!  You selected \n{'*'*5} {full_name} {'*'*5}")
-except TooPicky as tp:
-    print("You are way too picky and can't select any more.  You are stuck with your last choice!")
-    print(tp)
+    try:
+        for full_name in name_combo(max_tries):
+            print(full_name, file=sys.stderr, end="")
+            my_input = input()
+            if my_input.lower() == "q":
+                break
+        print(f"Excellent choice!")
+    except TooPicky as tp:
+        print(tp)
+        print("You are way too picky and can't select any more.")
+        print(f"You are stuck with your last choice.")
+    print(f"Your name is = {full_name}")
+
+
+if __name__ == "__main__":
+    """
+    Silly name generator using command line arguments to decide number of
+    naming attempts.
+    
+    Example usage:  
+        python silly_names.py -max_tries 7
+        python silly_names.py -m 3
+    """
+    parser = argparse.ArgumentParser(description='Silly name generator.')
+    parser.add_argument('-m', '--max_tries', type=int)
+    args = parser.parse_args()
+
+    if args.max_tries is None:
+        main()
+    else:
+        main(args.max_tries)
