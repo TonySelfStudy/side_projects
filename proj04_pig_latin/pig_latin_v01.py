@@ -33,133 +33,170 @@ import argparse
 
 
 class PigLatin:
-    # Store the letters, consonants, and vowels, etc,
-    # as sets at the class-level
+    # Store the letters, consonants, and vowels, and symbols to ignore,
+    # at the class-level
     # -----------------------------------------
     num_letters = 26
-    vowels = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'}
-    upper_case_first = ord("A")     # ord is the integer representing a character
-    lower_case_first = ord("a")
-    lower_case = {chr(i) for i in range(lower_case_first, lower_case_first + num_letters)}
-    upper_case = {chr(i) for i in range(upper_case_first, upper_case_first + num_letters)}
+    lower_case = {chr(i) for i in range(ord("a"), ord("a") + num_letters)}
+    upper_case = {chr(i) for i in range(ord("A"), ord("A") + num_letters)}
     letters = lower_case | upper_case
+    vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'}
     consonants = letters.difference(vowels)
-
-    ignored_chars = {"'"}   # These characters should be stripped from the PLS (pig latin structure) :)
 
     A = list(letters);      A.sort()        # All letters
     C = list(consonants);   C.sort()        # All consonants
     V = list(vowels);       V.sort()        # All vowels (excluding the letter y)
 
-    def __init__(self, original_text):
-        self.original_text = original_text      # Text to be translated
-        self.translated_text = []               # Translated text
-        self.current_word = []                  # Current working word being processed to pig latin
+    # ignored_chars are characters that should be stripped
+    # from the PLS (pig latin structure) :)
+    ignored_chars = {"'"}
 
-    def pig_sentence(self):
+    def __init__(self, original_text):
+        self.original_text = original_text                                  # Text to be translated
+        print(f'Translating to Pig Latin: {self.original_text}')
+        self.translated_text = PigLatin.pig_sentence(self.original_text)    # Translated text
+        print(f'Translated text: {self.translated_text}')
+
+    @staticmethod
+    def pig_sentence(sentence):
         """Translate sentence to pig latin.
+
+        Parameters
+        ----------
+        sentence : str
+            Sentence to translate.
+
+        Returns
+        -------
+        translated_text : str
+            Pig latin translation of sentence
+
+        Methodology
+        ------------
         1.  Skip ignored characters.
         2.  If you find a letter, add it to the current word.
         3.  If you find a non-letter, translate the current word (if it exists) and place it
             in the translated text followed by the non-letter.
         """
-        for c in self.original_text:
+        current_word = ""
+        translated_text = []
+
+        for c in sentence:
             # Skip ignored characters
             if c in PigLatin.ignored_chars:
                 continue
-            # If you get a non-letter, translate the current word (if it exists) then add the non-letter
+
+            # If you get a non-letter
+            #   1) translate the current word (if it exists)
+            #   2) add the the non-letter to translated text
+            #   3) reset current word
             if c not in PigLatin.A:
-                self.pig_word()
-                self.translated_text.append(c)
+                if current_word:
+                    translated_text.append(PigLatin.pig_word(current_word))
+                translated_text.append(c)
+                current_word = ""
+
             # Otherwise add the letter to the current word
             else:
-                self.current_word.append(c)
+                current_word += c
 
         # In case the sentence did not end in a non-letter (e.g. punctuation), run pig_word again
-        self.pig_word()
+        if current_word:
+            translated_text.append(PigLatin.pig_word(current_word))
+
         # Convert the list of translated text into a single string
-        self.translated_text = ''.join(self.translated_text)
+        translated_text = ''.join(translated_text)
 
-    def pig_word(self):
-        """Translate a single word to pig latin."""
+        return translated_text
 
-        # If the working word is empty, return without modifying the translation
-        if not self.current_word:
-            return
+    @ staticmethod
+    def pig_word(word):
+        """Translate a single word to pig latin.
 
-        # Initialize local variables
-        first_vowel = None
-        first_qu = None
-        first_y = None
-        is_cap = False
-        return_word = ""
+        Parameters
+        ----------
+        word : str
+            Word to translate.  Assumed to be free of special characters.
 
-        # Convert working word to a string and save it's capitalization
-        word = ''.join(self.current_word)
+        Returns
+        -------
+        pig_word : str
+            Pig latin translation of word
+        """
+        # Initialize return word
+        pig_word = ""
+
+        # If the requested word is empty, return empty string
+        if not word:
+            return pig_word
+
+        # Save capitalization of first letter
         if word[0] in PigLatin.upper_case:
             is_cap = True
+        else:
+            is_cap = False
 
-        # Find the first occurrence of a vowel, qu, and y
-        for i in PigLatin.V:
-            result = word.find(i)
-            if result != -1:
-                if first_vowel is None:
-                    first_vowel = result
-                else:
-                    if result < first_vowel:
-                        first_vowel = result
+        # Find the first occurrence of a regular vowel
+        first_regular_vowel = None
+        vowel_locations = [word.find(i) for i in PigLatin.V]      # will return -1 if not found
+        vowel_locations = [i for i in vowel_locations if i >= 0]  # remove -1's from list
+        if vowel_locations:
+            first_regular_vowel = min(vowel_locations)
 
-        result = word.find('qu')
-        first_qu = result if result != 1 else None
-
+        # Find first 'y'
         result = word.find('y')
-        first_y = result if result != 1 else None
+        if result == -1:
+            first_y = None
+        else:
+            first_y = result
 
-        # If no other vowels present, assume the first y is a vowel sound
-        if first_vowel is None:
+        # Determine first vowel.
+        # If no regular vowels, assume the first y is a vowel sound.
+        if first_regular_vowel:
+            first_vowel = first_regular_vowel
+        else:
             first_vowel = first_y
 
+        # Find first 'qu' sequence.
+        # If the u in qu is the first vowel, it needs special handling.
+        result = word.find('qu')
+        if result == -1:
+            first_qu = None
+        else:
+            first_qu = result
+
         # Determine translated word
-        if first_qu >= 0 and first_qu == (first_vowel - 1):       # First vowel is part of a qu
-            return_word = word[first_qu+2:] + word[0:first_qu+2] + 'ay'
-        elif first_vowel <= 0 or first_vowel is None:           # Starts with a vowel or has no vowel
-                return_word = word + 'way'
-        else:                                                   # Starts with a non-q consonant
-            return_word = word[first_vowel:] + word[0:first_vowel] + 'ay'
+        # -------------------------
+        # Special Case - first vowel is part of a qu
+        if (first_qu is not None) and (first_qu < first_vowel):
+            pig_word = word[first_qu+2:] + word[0:first_qu+2] + 'ay'
+        # Has no vowel or starts with a vowel
+        elif (first_vowel is None) or (first_vowel == 0):
+            pig_word = word + 'way'
+        # Starts with a non-q consonant
+        else:
+            pig_word = word[first_vowel:] + word[0:first_vowel] + 'ay'
 
         # Reset capitalization
         if is_cap:
-            return_word = return_word.capitalize()
+            pig_word = pig_word.capitalize()
         else:
-            return_word = return_word.lower()
+            pig_word = pig_word.lower()
 
-        # print(word, return_word, first_vowel, first_y, first_qu, )
-
-        # Add translated word to sentence and reset current word buffer
-        self.translated_text.append(return_word)
-        self.current_word = []
-
-def sample_translation():
-    text = "Speaking Pig Latin does not make one porcine!"
-    print(f'Translating to pig latin: {text}')
-    translator = PigLatin(text)
-    translator.pig_sentence()
-    print(translator.translated_text)
+        return pig_word
 
 
 if __name__ == '__main__':
 
-    # If true, run main via the command line input
-    command_line_mode = True
-
-    if command_line_mode:
-        # command line parameters
+    try:
+        # determine command line parameters
         parser = argparse.ArgumentParser(description='Pig latin translator')
         parser.add_argument('text', help="quoted string of text you wish to translate")
         args = parser.parse_args()
+        text_to_translate = args.text
+    except:
+        print('Argument not passed via command line')
+        print('Using default sentence for example translation')
+        text_to_translate = "Speaking Pig Latin does not make one porcine!"
 
-        y = PigLatin(args.text)
-        y.pig_sentence()
-        print(y.translated_text)
-    else:
-        sample_translation()
+    translation = PigLatin(text_to_translate)
