@@ -173,7 +173,7 @@ class PigLatin:
         # Has no vowel or starts with a vowel
         elif (first_vowel is None) or (first_vowel == 0):
             pig_word = word + 'way'
-        # Starts with a non-q consonant
+        # Starts with a non-q consonant or group of consonants
         else:
             pig_word = word[first_vowel:] + word[0:first_vowel] + 'ay'
 
