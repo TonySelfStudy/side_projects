@@ -7,9 +7,10 @@ my_whitespace = string.whitespace + '%'
 # for i in my_whitespace:
 #     print(f'ord {ord(i)}: {i}')
 
-fn = 'dictionaries/3of6all.txt'
+fn = 'dictionaries/International/2of4brif.txt'
 # fn = 'dictionaries/american_words_short.txt'
 # fn = 'dictionaries/american_words_long.txt'
+# fn = 'dictionaries/3of6all.txt'
 
 palindromes = []
 
