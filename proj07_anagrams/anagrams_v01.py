@@ -176,13 +176,14 @@ class WordList:
         return indices, words
 
     def input_loop(self, name=None):
-        """Main loop to allow user to select anagram choices.
-        Currently, it uses a random selection rather than console input.
+        """Main loop to allow user to select anagram choices
+        or have the selected automatically.
 
         Parameters
         ----------
         name = str
-            Name used in anagram generation.  If specified, word choices will be selected automatically.
+            Name used in anagram generation.
+            If specified, word choices will be selected automatically.
             If None, user will be prompted for name.
 
         Returns
