@@ -175,9 +175,15 @@ class WordList:
         indices, words = list_contains(self.words, self.letter_counts, Counter(word))
         return indices, words
 
-    def input_loop(self, name):
+    def input_loop(self, name=None):
         """Main loop to allow user to select anagram choices.
         Currently, it uses a random selection rather than console input.
+
+        Parameters
+        ----------
+        name = str
+            Name used in anagram generation.  If specified, word choices will be selected automatically.
+            If None, user will be prompted for name.
 
         Returns
         -------
@@ -191,30 +197,33 @@ class WordList:
         """
         selected_words = []
 
-        print("Please enter your first and last name")
-        # name = input()  # uncomment if you wish to have user input
+        if name is None:
+            name = input("Please enter your first and last name: ")
+            interactive = True
+        else:
+            interactive = False
+        print(f"Looking for anagrams in: {name}")
 
         # extract only the letters from the name
-        working_word = [i for i in name.lower() if i.isalpha()]
+        working_word = "".join([i for i in name.lower() if i.isalpha()])
 
         while working_word:
 
-            print(f'\nRemaining letters we have to work with: \n\t*{working_word}*')
+            print(f'\nRemaining letters we have to work with: *{working_word}*')
             my_indices, my_words = self.find_contained(working_word)
 
             if not my_words:
                 print('The remaining letters are exhausted or they do not contain possible words')
                 break
 
-            print('Possible words include')
-            # show at max 25 words
-            for i, word in enumerate(my_words[:25]):
-                print(f'{i}), {word}')
-
-
-            print("Please enter your choice")
-            # choice = input()  # uncomment if you wish to have user input
-            choice = random.choice(list(range(len(my_words))))
+            if interactive:
+                print('Possible words include')
+                # use my_words[:50] show at max 50 words
+                for i, word in enumerate(my_words):
+                    print(f'{i:02}) {word}')
+                choice = int(input("\nPlease enter your choice: "))
+            else:
+                choice = random.choice(list(range(len(my_words))))
 
             print(f'You selected: {my_words[choice]}')
             selected_words.append(my_words[choice])
@@ -222,10 +231,10 @@ class WordList:
 
         return name, selected_words, working_word
 
-    def user_interface(self, name='tony held'):
+    def user_interface(self, name=None):
         """Point of entry for the anagram selection routines"""
 
-        print('\nWelcome to the anagram creator!')
+        print(f"\n{'*'*50}\nWelcome to the anagram creator! \n{'*'*50}")
 
         name, selected_words, working_word = self.input_loop(name)
 
@@ -236,25 +245,23 @@ class WordList:
             print(f'\nNote:  the following letters that remained that we could not form words from: '
                   f'\n\t{working_word}')
 
+def main():
+    file_name = 'dictionaries/2of4brif.txt'
+    words = WordList(file_name)
+    words.print_most_frequent(5)
+    words.find_anagrams('bear')
+    words.find_anagrams('polyglot')
+    words.find_anagrams('qwertyuiop')
+
+    search_word = 'tacotime'
+    my_indices, my_words = words.find_contained(search_word)
+    print(f'\nWords that can be found in *{search_word}*:\n{my_words}')
+
+    # Run anagram assist with and without default names
+    words.user_interface('elizabeth stryjewski')
+    words.user_interface()
 
 
 
-# def main():
-file_name = 'dictionaries/2of4brif.txt'
-words = WordList(file_name)
-words.print_most_frequent(5)
-words.find_anagrams('bear')
-words.find_anagrams('polyglot')
-words.find_anagrams('qwertyuiop')
-
-words.user_interface('anthony edward held')
-words.user_interface('ryan adamson meek')
-
-# # find contained words
-# search_word = 'tacotime'
-# my_indices, my_words = words.find_contained(search_word)
-# print(f'\nWords that can be found in {search_word}:\n{my_words}')
-
-
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
