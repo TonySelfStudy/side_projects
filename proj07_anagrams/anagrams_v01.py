@@ -9,19 +9,11 @@ References & Acknowledgements:
 
 Notes
 -----
-1) multi word finder
-2) select each letter,
-    see if it is in the dict, if so process remainder
-3) select two letters
+
 """
 from collections import defaultdict, Counter
 import random
 
-
-def create_letter_counts(words):
-    """Return of list of letter counts for each word in words"""
-    letter_counts = [Counter(i) for i in words]
-    return letter_counts
 
 def load_dictionary(file_name):
     """load contents of text file into attribute self.words"""
@@ -47,7 +39,9 @@ def listify_words(words):
     return words_sorted
 
 def index_list(words):
-    """Create a dictionary of occurrences of a list, and the frequency of each word, to speed up future searches.
+    """Create a dictionary of occurrences of a list, and the frequency of each word,
+    to speed up future searches.
+
     Returns
     -------
     dict_words - dict
@@ -74,6 +68,11 @@ def index_list(words):
     print(f'{frequencies[:5]}')
 
     return dict_words, frequencies
+
+def create_letter_counts(words):
+    """Return of list of letter counts for each word in words"""
+    letter_counts = [Counter(i) for i in words]
+    return letter_counts
 
 def word1_contains_word2(word1, word2):
     """Based on letter frequency dictionaries created by collections.Counter,
@@ -250,7 +249,6 @@ def main():
     words = WordList(file_name)
     words.print_most_frequent(5)
     words.find_anagrams('bear')
-    words.find_anagrams('polyglot')
     words.find_anagrams('qwertyuiop')
 
     search_word = 'tacotime'
@@ -260,7 +258,6 @@ def main():
     # Run anagram assist with and without default names
     words.user_interface('elizabeth stryjewski')
     words.user_interface()
-
 
 
 if __name__ == '__main__':
