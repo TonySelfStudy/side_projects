@@ -3,6 +3,7 @@ Solving Anagrams.
 
 Created by: Tony Held
 Created on: 2021-03-15
+Completed: 2021-03-17
 
 References & Acknowledgements:
 1) Inspired by `Impractical Python Projects` Chapter 3
